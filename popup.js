@@ -4,12 +4,11 @@ let showTransformed = true;
 
 document.addEventListener("DOMContentLoaded", async () => {
   const { settings } = await api.storage.local.get(["settings"]);
-  if (!settings) return;
 
-  document.getElementById("vowels").value = settings.vowels ?? 0;
-  document.getElementById("letters").value = settings.letters ?? 0;
-  document.getElementById("words").value = settings.words ?? 0;
-  document.getElementById("lowercaseOnly").checked = settings.lowercaseOnly ?? false;
+  document.getElementById("vowels").value = settings.vowels;
+  document.getElementById("letters").value = settings.letters;
+  document.getElementById("words").value = settings.words;
+  document.getElementById("lowercaseOnly").checked = settings.lowercaseOnly;
 
   const [tab] = await api.tabs.query({ active: true, currentWindow: true });
 

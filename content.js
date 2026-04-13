@@ -3,8 +3,12 @@ const api = (typeof browser !== "undefined") ? browser : chrome;
 let settingsCache = { vowels: 100, letters: 0, words: 0, lowercaseOnly: true };
 let showTransformed = true;
 
-api.storage.local.get(["settings"]).then((result) => {
-  settingsCache = result.settings || settingsCache;
+api.storage.local.get(["settings"]).then(async (result) => {
+  if (result.settings) {
+    settingsCache = result.settings;
+  } else {
+    await api.storage.local.set({ "settings": settingsCache });
+  }
   applyAll();
 });
 

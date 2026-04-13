@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "TextDecay",
+  "version": "0.0.1",
+  "description": "Removes vowels, letters, or words from webpages for cognitive training.",
+
+  "permissions": ["activeTab", "storage"],
+
+  "action": {
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "all_frames": true
+    }
+  ],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "text@decay",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}

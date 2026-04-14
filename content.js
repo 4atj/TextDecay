@@ -1,6 +1,6 @@
 const api = (typeof browser !== "undefined") ? browser : chrome;
 
-let settingsCache = { vowels: 100, letters: 0, words: 0, lowercaseOnly: true };
+let settingsCache = { vowels: 100, letters: 0, words: 0, lowercaseOnly: true, keepConsecutiveVowels: true };
 let showTransformed = true;
 
 api.storage.local.get(["settings"]).then(async (result) => {
@@ -26,11 +26,20 @@ function isVowel(char, lowercaseOnly = false) {
   return "aeiou".includes(lowercaseOnly ? base : base.toLowerCase());
 }
 
-function removeVowels(text, percent, lowercaseOnly = false) {
+function removeVowels(text, percent, lowercaseOnly = false, keepConsecutiveVowels = true) {
   return text.split(/([^\p{L}\p{N}_]+)/u).map(part => {
-    return [...part].map((c, i) => {
+    const chars = [...part];
+    return chars.map((c, i) => {
       if (i === 0) return c;
       if (!isVowel(c, lowercaseOnly)) return c;
+      if (keepConsecutiveVowels) {
+        const prev = chars[i - 1];
+        const next = chars[i + 1];
+        const isCluster =
+          (prev && isVowel(prev, lowercaseOnly)) ||
+          (next && isVowel(next, lowercaseOnly));
+        if (isCluster) return c;
+      }
       if (Math.random() >= percent / 100) return c;
       return "";
     }).join("");
@@ -104,7 +113,7 @@ function applyAll() {
   walk(document.body, (text) => {
     let out = text;
     if (settingsCache.words > 0) out = removeWords(out, settingsCache.words);
-    if (settingsCache.vowels > 0) out = removeVowels(out, settingsCache.vowels, settingsCache.lowercaseOnly);
+    if (settingsCache.vowels > 0) out = removeVowels(out, settingsCache.vowels, settingsCache.lowercaseOnly, settingsCache.keepConsecutiveVowels);
     if (settingsCache.letters > 0) out = removeLetters(out, settingsCache.letters, settingsCache.lowercaseOnly);
     return out;
   });

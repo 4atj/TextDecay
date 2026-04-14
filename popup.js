@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("letters").value = settings.letters;
   document.getElementById("words").value = settings.words;
   document.getElementById("lowercaseOnly").checked = settings.lowercaseOnly;
+  document.getElementById("keepConsecutiveVowels").checked = settings.keepConsecutiveVowels;
 
   const [tab] = await api.tabs.query({ active: true, currentWindow: true });
 
@@ -27,7 +28,8 @@ document.getElementById("apply").addEventListener("click", async () => {
     vowels: parseInt(document.getElementById("vowels").value),
     letters: parseInt(document.getElementById("letters").value),
     words: parseInt(document.getElementById("words").value),
-    lowercaseOnly: document.getElementById("lowercaseOnly").checked
+    lowercaseOnly: document.getElementById("lowercaseOnly").checked,
+    keepConsecutiveVowels: document.getElementById("keepConsecutiveVowels").checked,
   };
 
   await api.storage.local.set({ settings });
